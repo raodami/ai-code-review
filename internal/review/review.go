@@ -99,7 +99,7 @@ func buildReviewPrompt(prSummary string, files []interface{}) string {
 	sb.WriteString(fmt.Sprintf("PR Title: %s\n\n", prSummary))
 	sb.WriteString("Files changed:\n")
 	
-	for i, f := range files {
+	for _, f := range files {
 		file := f.(map[string]interface{})
 		filename := file["filename"].(string)
 		patch := file["patch"].(string)

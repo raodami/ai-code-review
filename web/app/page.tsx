@@ -66,7 +66,7 @@ export default function Home() {
 
   const copyToClipboard = async () => {
     if (!review) return;
-    const text = `${review.summary}\n\nIssues:\n${review.issues?.map(i => `- ${i.message}`).join('\n')}`;
+    const text = `${review.summary}\n\nIssues:\n${review.issues?.map((i: ReviewIssue) => `- ${i.message}`).join('\n')}`;
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
