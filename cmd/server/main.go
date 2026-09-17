@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
-	defer store.Close()
+	defer store.DB().Close()
 	
 	reviewer := review.NewClient()
 	ghClient := github.NewClient(githubToken)
