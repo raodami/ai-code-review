@@ -1,9 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -49,7 +49,16 @@ func SetupRoutes(r *gin.Engine, s *store.Store, reviewer *review.Client, ghClien
 		}
 		
 		// Generate review
-		result, err := reviewer.ReviewCode(pr.Title, pr.Files)
+		result, err := reviewer.ReviewCode(pr.Title, func() []interface{} {
+			files := make([]interface{}, len(pr.Files))
+			for i, f := range pr.Files {
+				files[i] = map[string]interface{}{
+					"filename": f.Filename,
+					"patch":    f.Patch,
+				}
+			}
+			return files
+		}())
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate review"})
 			return
@@ -79,9 +88,8 @@ func SetupRoutes(r *gin.Engine, s *store.Store, reviewer *review.Client, ghClien
 	})
 	
 	r.GET("/api/review/:id", func(c *gin.Context) {
-		id := c.Param("id")
 		// TODO: implement GetReviewByID
-		c.JSON(http.StatusOK, gin.H{"id": id})
+		c.JSON(http.StatusOK, gin.H{"id": c.Param("id")})
 	})
 	
 	r.GET("/api/history", func(c *gin.Context) {
