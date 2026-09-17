@@ -39,6 +39,8 @@ func NewStore(path string) (*Store, error) {
 func (s *Store) DB() *sql.DB {
 	return s.db
 }
+
+func (s *Store) initSchema() error {
 	query := `
 	CREATE TABLE IF NOT EXISTS reviews (
 		id TEXT PRIMARY KEY,
